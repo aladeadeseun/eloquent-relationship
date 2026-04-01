@@ -1,0 +1,13 @@
+composer create-project laravel/laravel myApp
+php artisan install:api
+
+//For JWT installation
+https://jwt-auth.readthedocs.io/en/develop/
+
+//Instantiate a $reflector using new ReflectionClass($object)
+//Loop over the Attributes
+//Get the attributes using $property->getAttributes(); (only if ValidationRuleInterface)
+//Loop over the Attributes
+//Instantiate a ProperValidator instance using $attribute->getValidator();
+//Ask IF the property does not validate
+//Add the property to errors with a message
