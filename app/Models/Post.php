@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['title','user_id', 'body', 'created_at', 'updated_at'])]
+#[Fillable(['title','author_id', 'body', 'created_at', 'updated_at'])]
 class Post extends Model
 {
     /** @use HasFactory<\Database\Factories\PostFactory> */
@@ -21,7 +21,7 @@ class Post extends Model
     }
 
     function comments(): HasMany{
-        return $this->hasMany(Post::class, "post_id", "id");
+        return $this->hasMany(Comment::class, "post_id", "id");
     }
 
     function author(): BelongsTo{
