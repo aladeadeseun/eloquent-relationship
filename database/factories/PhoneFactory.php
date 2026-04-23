@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Phone;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +21,10 @@ class PhoneFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            // This auto-creates a User if one is not provided
+            'user_id' => User::factory(), 
+            'phone_number' => $this->faker->phoneNumber(),
+            'model'=>$this->faker->word()
         ];
     }
 }

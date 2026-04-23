@@ -11,3 +11,21 @@ https://jwt-auth.readthedocs.io/en/develop/
 //Instantiate a ProperValidator instance using $attribute->getValidator();
 //Ask IF the property does not validate
 //Add the property to errors with a message
+
+
+Generate Model, Migration, and Factory Together: If you haven't created the model yet, you can generate the model, its database migration, and its factory all at once:
+*php artisan make:model Phone -mf
+
+Create a Seeder Class
+Generate a dedicated seeder class via your terminal:
+*php artisan make:seeder PhoneSeeder
+
+Execute the Seeder Command 
+Run your database seeder to persist the data to your tables using Artisan:
+php artisan db:seed
+
+Want to run only this specific file without registering it first? Use the class flag: 
+php artisan db:seed --class=PhoneSeeder
+
+php artisan db:seed --class=PostCommentSeeder
+

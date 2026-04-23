@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('phones', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string("model", 30);
-            $table->string("phone_number", 20);
-            $table->bigInteger('user_id')->unsigned();
-            $table->index('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
+            $table->string("title", 300);
+            $table->text("body");
+            
+            $table->bigInteger('author_id')->unsigned();
+            $table->index('author_id');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete("cascade");
 
             $table->timestamps();
         });
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('phones');
+        Schema::dropIfExists('posts');
     }
 };
