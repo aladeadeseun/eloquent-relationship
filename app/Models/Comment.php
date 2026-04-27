@@ -22,4 +22,8 @@ class Comment extends Model
     function post(): BelongsTo{
         return $this->belongsTo(Post::class, "post_id", "id");
     }
+
+    function author(): BelongsTo{
+        return $this->belongsTo(User::class, "author_id", "id")->withDefault(['name' => 'Guest Author',]);
+    }
 }

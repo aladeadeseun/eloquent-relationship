@@ -54,10 +54,47 @@ class User extends Authenticatable implements JWTSubject
     }
 
     function phone(): HasOne{
-        return $this->hasOne(Phone::class, "user_id", "id");
+        return $this->hasOne(Phone::class, "user_id", "id")->withDefault();
     }
 
     function posts(): HasMany{
         return $this->hasMany(Post::class, "author_id", "id");
+    }
+
+    function comments(): HasMany{
+        
+        return $this->hasMany(Comment::class, "author_id", "id")->chaperone();
+    }
+
+    /**
+     * Get the user's most recent post.
+     */
+    public function latestPost(): HasOne
+    {
+        return $this->hasOne(Post::class, "author_id", "id")->latestOfMany();
+    }
+
+    /**
+     * Get the user's most recent comment.
+     */
+    public function latestComment(): HasOne
+    {
+        return $this->hasOne(Comment::class, "author_id", "id")->latestOfMany();
+    }
+
+    /**
+     * Get the user's most recent post.
+     */
+    public function oldestPost(): HasOne
+    {
+        return $this->hasOne(Post::class, "author_id", "id")->latestOfMany();
+    }
+
+    /**
+     * Get the user's most recent comment.
+     */
+    public function oldestComment(): HasOne
+    {
+        return $this->hasOne(Comment::class, "author_id", "id")->latestOfMany();
     }
 }
