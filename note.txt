@@ -29,3 +29,5 @@ php artisan db:seed --class=PhoneSeeder
 
 php artisan db:seed --class=PostCommentSeeder
 
+php artisan db:seed --class=UserRoleSeeder
+

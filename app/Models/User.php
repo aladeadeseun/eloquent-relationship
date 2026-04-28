@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -96,5 +97,47 @@ class User extends Authenticatable implements JWTSubject
     public function oldestComment(): HasOne
     {
         return $this->hasOne(Comment::class, "author_id", "id")->latestOfMany();
+    }
+
+    function roles(): BelongsToMany{
+        return $this->belongsToMany(Role::class, "user_roles", "user_id", "role_id", "id", "id");
+        //By default, only the model keys will be present on the pivot model. If your 
+        //intermediate table contains extra attributes, you must specify them when defining the relationship:
+        //return $this->belongsToMany(Role::class)->withPivot('active', 'created_by');
+
+        /**
+         * If you would like your intermediate table to have created_at and updated_at timestamps that are 
+         * automatically maintained by Eloquent, call the withTimestamps method when defining the relationship:
+         */
+        //return $this->belongsToMany(Role::class)->withTimestamps();
+
+        /**
+         * If this is the case, you may wish to rename your intermediate table attribute to 
+         * subscription instead of pivot. This can be done using the as method when defining the relationship:
+         */
+        //return $this->belongsToMany(Podcast::class)->as('subscription')->withTimestamps();
+
+        //Filtering Queries via Intermediate Table Columns
+        /**
+         * return $this->belongsToMany(Role::class)->wherePivot('approved', 1);
+         * 
+         * return $this->belongsToMany(Role::class)->wherePivotIn('priority', [1, 2]);
+         * 
+         * return $this->belongsToMany(Role::class)->wherePivotNotIn('priority', [1, 2]);
+         * 
+         * return $this->belongsToMany(Podcast::class)->as('subscriptions')->wherePivotBetween('created_at', ['2020-01-01 00:00:00', '2020-12-31 00:00:00']);
+         * 
+         * return $this->belongsToMany(Podcast::class)->as('subscriptions')->wherePivotNotBetween('created_at', ['2020-01-01 00:00:00', '2020-12-31 00:00:00']);
+         * 
+         * return $this->belongsToMany(Podcast::class)->as('subscriptions')->wherePivotNull('expired_at');
+         * 
+         * return $this->belongsToMany(Podcast::class)->as('subscriptions')->wherePivotNotNull('expired_at');
+         */
+
+        /**
+         * If you need to both query and create relationships with a particular pivot value, you may use the withPivotValue method:
+         * 
+         * return $this->belongsToMany(Role::class)->withPivotValue('approved', 1);
+         */
     }
 }
