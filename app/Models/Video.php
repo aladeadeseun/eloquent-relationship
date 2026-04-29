@@ -1,37 +1,37 @@
-composer create-project laravel/laravel myApp
-php artisan install:api
+<?php
 
-//For JWT installation
-https://jwt-auth.readthedocs.io/en/develop/
+namespace App\Models;
 
-//Instantiate a $reflector using new ReflectionClass($object)
-//Loop over the Attributes
-//Get the attributes using $property->getAttributes(); (only if ValidationRuleInterface)
-//Loop over the Attributes
-//Instantiate a ProperValidator instance using $attribute->getValidator();
-//Ask IF the property does not validate
-//Add the property to errors with a message
+use Database\Factories\VideoFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+class Video extends Model
+{
+    /** @use HasFactory<\Database\Factories\VideoFactory> */
+    use HasFactory;
 
-Generate Model, Migration, and Factory Together: If you haven't created the model yet, you can generate the model, its database migration, and its factory all at once:
-*php artisan make:model Phone -mf
+    protected static function factory()
+    {
+        return VideoFactory::new();
+    }
 
-Create a Seeder Class
-Generate a dedicated seeder class via your terminal:
-*php artisan make:seeder PhoneSeeder
+    public function polymorphicComments(): MorphMany{
+        return $this->morphMany(PolymorphicComment::class, "commentable", "commentable_type", "commentable_id", "id");
+    }
 
-Execute the Seeder Command 
-Run your database seeder to persist the data to your tables using Artisan:
-php artisan db:seed
+    /**
+     * Get the user's most recent image.
+     */
+    public function latestComment(): MorphOne
+    {
+        return $this->morphOne(PolymorphicComment::class, 'commentable', 'commentable_type', "commentable_id", "id")->latestOfMany();
+    }
 
-Want to run only this specific file without registering it first? Use the class flag: 
-php artisan db:seed --class=PhoneSeeder
-
-php artisan db:seed --class=PostCommentSeeder
-
-php artisan db:seed --class=UserRoleSeeder
-
-public function posts()
+    public function tags(): MorphToMany
     {
         /***
          * 1. $related
@@ -75,23 +75,14 @@ public function posts()
          * •	Purpose: Useful if you are defining the relationship dynamically or via a different method name than usual.
 Visualization of the Parameter F
          */
-        return $this->morphedByMany(
-            Post::class, "commentable", 'commentables',
-            "polymorphic_comment_id", 
-            "commentable_id",
-            "id", "id", "posts"
+        return $this->morphToMany(
+            Tag::class, 
+            "taggable",    // $name
+            'taggables',   // $table
+            'taggable_id', // $foreignPivotKey (Corrected: Links to Post/Video ID)
+            'tag_id',      // $relatedPivotKey (Corrected: Links to Tag ID)
+            'id',          // $parentKey
+            'id'           // $relatedKey
         );
     }
-
-    // Retrieve all posts that have three or more comments...
-    $posts = Post::has('comments', '>=', 3)->get(); 
-
-    // Retrieve posts with at least one comment containing words like code%...
-    $posts = Post::whereHas('comments', function (Builder $query) {
-        $query->where('content', 'like', 'code%');
-    })->get();
-
-    // Retrieve posts with at least ten comments containing words like code%...
-    $posts = Post::whereHas('comments', function (Builder $query) {
-        $query->where('content', 'like', 'code%');
-    }, '>=', 10)->get();
+}
